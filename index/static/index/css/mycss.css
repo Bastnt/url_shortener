@@ -1,0 +1,32 @@
+/* Créer un espace entre les différents badges de contact */
+.spacer
+{
+	margin-right:30px;
+}
+
+.error{
+	background-color: #ffcccc;
+}
+
+.center-container {
+	width:100%;
+	text-align:center;
+}
+
+#url {
+	width:90%;
+	margin:auto;
+	font-size:20px;
+	text-align:center;
+}
+
+.text-danger {
+	font-size:18px;
+}
+
+#result{
+	width:60%;
+	font-size:30px;
+	color:blue;
+	text-align:center;
+}

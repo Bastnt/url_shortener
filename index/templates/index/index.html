@@ -1,0 +1,93 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>URL Shortener</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <meta charset="utf-8">
+    <link href="{% static 'index/css/bootstrap.cyborg.css' %}" rel="stylesheet">
+    <link href="{% static 'index/css/mycss.css' %}" rel="stylesheet">
+    <meta name="description" content="A simple url shortener">
+    <meta name="author" content="Bastien Berge">
+    <link rel="shortcut icon" href="{% static 'index/img/favicon.png' %}">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+  <body>
+
+
+    <div class="container">
+      <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <img src="{% static 'index/img/main.png' %}" class='pull-left' style='height:100px;margin-top:10px;margin-right:10px;' />
+        <h1>URL Shortener</h1>
+        <h4>Just paste your URL and we'll make it smaller</h4>
+        <br><br>
+        <div class='center-container'>
+          <input type="text" id="url" name="url" />
+        </div>
+        <div class='center-container' id="log">
+          
+        </div>
+      </div>
+      <p></p>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'index/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'index/js/modal.js' %}"></script>
+
+    <script type="text/javascript">
+    var urlRegex = /(http|https):\/\/([\w-]+(\.[\w-]+)+[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/
+    var CTRL = false;
+      $(function() {
+        $('#url').focus();
+        $('#url').keypress(function(event) {
+          if(event.which == 13)
+            sendURL();
+        });
+        $('#url').keydown(function(event){
+          if(event.which == 17)
+            CTRL = true;
+        });
+        $('#url').keyup(function(event){
+          if(event.which == 17)
+            CTRL = false;
+        });
+        $('#url').keyup(function(event) {
+          if(CTRL && event.which == 86)
+            sendURL();
+        });
+
+      });
+
+    function sendURL() {
+      if(urlRegex.test($('#url').val())) {
+        $.post("#", {'url': $('#url').val(), 'csrfmiddlewaretoken': '{{ csrf_token }}'})
+         .done(function(data) {
+            $("#log").html("<br><p class='text-success'> Your mini-link : </p><input type='text' value='"+window.location.href+"?"+data+"' id='result'>");
+            $('#result').select();
+          })
+         .fail(function(xhr, textStatus, errorThrown){ 
+            alert("Status:"+textStatus+"\nError: "+errorThrown+"\n"+xhr.responseText);
+          });
+      }
+      else {
+        $("#log").html("<p class='text-danger'>Bad URL !</p>");
+      }
+    }
+    
+
+
+    </script>
+  </body>
+</html>
